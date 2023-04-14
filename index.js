@@ -4,13 +4,11 @@ import { existsSync } from "fs";
 import { appendFile, readFile } from "fs/promises";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-const sheet_data = getSheetData("test.xlsx");
-
-// throw new Error("Execution stopped at line 59");
+const sheet_data = getSheetData("data/results.xlsx");
 
 (async () => {
   // Logs array
-  const logs = await readFile("logs.txt", "utf-8");
+  const logs = await readFile("data/logs.txt", "utf-8");
   const logs_array = logs
     .split(/\r?\n/)
     .filter((line) => line.length > 0)
@@ -27,11 +25,16 @@ const sheet_data = getSheetData("test.xlsx");
   for (let row of sheet_data) {
     // column names (columns structure)
     let { roll_number, name, f_name, phone, msg } = row;
-    let attachment = existsSync(`reports/${roll_number}.pdf`)
-      ? `reports/${roll_number}.pdf`
+    let attachment = existsSync(`data/reports/${roll_number}.pdf`)
+      ? `data/reports/${roll_number}.pdf`
       : null;
 
     // msg = encodeURIComponent(msg);
+
+    // add faild roll_number to 'failed.txt'
+    if (!attachment) {
+      await appendFile("data/failed.txt", roll_number + "\r\n");
+    }
 
     if (!logs_array.includes(roll_number) && attachment) {
       await page.goto(
@@ -63,21 +66,21 @@ const sheet_data = getSheetData("test.xlsx");
       await delay(1000);
       await page.click(send_btn);
 
-      // wait for completion
+      // wait for upload completion
       let audio_cancel_btn = '[data-testid="audio-cancel-noborder"]';
 
       await delay(2000);
-      // try {
-      //   await page.waitForSelector(audio_cancel_btn);
+      try {
+        await page.waitForSelector(audio_cancel_btn);
 
-      //   await page.waitForSelector(audio_cancel_btn, {
-      //     hidden: true,
-      //   });
-      // } catch (e) {}
+        await page.waitForSelector(audio_cancel_btn, {
+          hidden: true,
+        });
+      } catch (e) {}
       await delay(2000);
 
       // update logs
-      await appendFile("logs.txt", roll_number + "\r\n");
+      await appendFile("data/logs.txt", roll_number + "\r\n");
     }
   }
   //   Disconnect the browser at the end

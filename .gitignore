@@ -1,6 +1,2 @@
 node_modules
-logs.txt
-test.js
-test.xlsx
-~$test.xlsx
-reports
+data

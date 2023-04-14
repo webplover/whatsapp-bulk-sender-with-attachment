@@ -67,6 +67,7 @@ const sheet_data = getSheetData("data/results.xlsx");
       await page.click(send_btn);
 
       // wait for upload completion
+      /*
       let audio_cancel_btn = '[data-testid="audio-cancel-noborder"]';
 
       await delay(2000);
@@ -77,7 +78,9 @@ const sheet_data = getSheetData("data/results.xlsx");
           hidden: true,
         });
       } catch (e) {}
-      await delay(2000);
+      */
+
+      await delay(1000 * 10);
 
       // update logs
       await appendFile("data/logs.txt", roll_number + "\r\n");

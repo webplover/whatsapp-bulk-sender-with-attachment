@@ -5,7 +5,8 @@ import { appendFile, readFile } from "fs/promises";
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const sheet_data = getSheetData("test.xlsx");
-let keys = Object.keys(sheet_data[0]);
+
+// throw new Error("Execution stopped at line 59");
 
 (async () => {
   // Logs array
@@ -23,12 +24,9 @@ let keys = Object.keys(sheet_data[0]);
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(300000); // 5 minutes
 
-  for (let col of sheet_data) {
-    let roll_number = col[keys[0]];
-    let name = col[keys[1]];
-    let f_name = col[keys[2]];
-    let phone = col[keys[3]];
-    let msg = col[keys[4]];
+  for (let row of sheet_data) {
+    // column names (columns structure)
+    let { roll_number, name, f_name, phone, msg } = row;
     let attachment = existsSync(`reports/${roll_number}.pdf`)
       ? `reports/${roll_number}.pdf`
       : null;
@@ -69,13 +67,13 @@ let keys = Object.keys(sheet_data[0]);
       let audio_cancel_btn = '[data-testid="audio-cancel-noborder"]';
 
       await delay(2000);
-      try {
-        await page.waitForSelector(audio_cancel_btn);
+      // try {
+      //   await page.waitForSelector(audio_cancel_btn);
 
-        await page.waitForSelector(audio_cancel_btn, {
-          hidden: true,
-        });
-      } catch (e) {}
+      //   await page.waitForSelector(audio_cancel_btn, {
+      //     hidden: true,
+      //   });
+      // } catch (e) {}
       await delay(2000);
 
       // update logs
